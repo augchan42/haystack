@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 @component
-class DocumentCleaner:
+class DocumentCleaner:            
     """
     Makes text documents more readable by removing extra whitespaces, empty lines, specified substrings, regexes, page headers and footers (in this order).
     This is useful for preparing the documents for further processing by LLMs.
@@ -30,6 +30,10 @@ class DocumentCleaner:
     p.connect("splitter.documents", "writer.documents")
     ```
     """
+    def log_attributes(self):
+        for attr_name, attr_value in self.__dict__.items():
+            logger.debug(f"{attr_name}: {attr_value}")
+
 
     def __init__(
         self,
@@ -74,17 +78,23 @@ class DocumentCleaner:
                 cleaned_docs.append(doc)
                 continue
             text = doc.content
+            logger.debug(f"Document ID {doc.id} content before anything: {doc.content[:500]}")  # Log first 500 chars for brevity
 
             if self.remove_extra_whitespaces:
                 text = self._remove_extra_whitespaces(text)
+                logger.debug(f"Document ID {doc.id} content after remove whitespace: {text}")  # Log first 500 chars for brevity
             if self.remove_empty_lines:
                 text = self._remove_empty_lines(text)
+                logger.debug(f"Document ID {doc.id} content after _remove_empty_lines: {text}")  # Log first 500 chars for brevity
             if self.remove_substrings:
                 text = self._remove_substrings(text, self.remove_substrings)
+                logger.debug(f"Document ID {doc.id} content after remove_substrings: {text}")  # Log first 500 chars for brevity
             if self.remove_regex:
                 text = self._remove_regex(text, self.remove_regex)
+                logger.debug(f"Document ID {doc.id} content after remove_regex: {text}")  # Log first 500 chars for brevity
             if self.remove_repeated_substrings:
                 text = self._remove_repeated_substrings(text)
+                logger.debug(f"Document ID {doc.id} content after _remove_repeated_substrings: {text}")  # Log first 500 chars for brevity
 
             cleaned_docs.append(Document(content=text, meta=deepcopy(doc.meta)))
 

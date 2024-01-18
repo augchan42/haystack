@@ -1,4 +1,6 @@
 import re
+import logging
+
 from abc import ABC, abstractmethod
 from typing import Optional, Any
 
@@ -14,13 +16,16 @@ from haystack.dataclasses import Answer
 from haystack.document_stores.types import DocumentStore
 from haystack.document_stores.in_memory import InMemoryDocumentStore
 
+logger = logging.getLogger(__name__)
 
 def build_rag_pipeline(
     document_store: DocumentStore,
     embedding_model: str = "intfloat/e5-base-v2",
     generation_model: str = "gpt-3.5-turbo",
     llm_api_key: Optional[str] = None,
+    api_base_url: Optional[str] = None,
     prompt_template: Optional[str] = None,
+    system_prompt: Optional[str] = None
 ):
     """
     Returns a prebuilt pipeline to perform retrieval augmented generation
@@ -35,7 +40,7 @@ def build_rag_pipeline(
     # Resolve components based on the chosen parameters
     retriever = resolve_retriever(document_store)
     embedder = resolve_embedder(embedding_model)
-    generator = resolve_generator(generation_model, llm_api_key)
+    generator = resolve_generator(generation_model, llm_api_key, api_base_url, system_prompt)
     prompt_template = resolve_prompt_template(prompt_template)
 
     # Add them to the Pipeline and connect them
@@ -49,6 +54,21 @@ class _RAGPipeline:
     """
     A simple ready-made pipeline for RAG. It requires a populated document store.
     """
+
+    def log_attributes(self):        
+        logger.info("Logging attributes of _RAGPipeline instance:")
+        for attr_name, attr_value in self.__dict__.items():
+            logger.info(f"  {attr_name}: {attr_value}")
+
+        # If you want to log the components and connections of the pipeline
+        for node, attrs in self.pipeline.graph.nodes(data=True):
+            print(f"Node: {node}")
+            for key, value in attrs.items():
+                print(f"  {key}: {value}")        
+        
+        logger.info("Logging connections of the pipeline:")
+        for connection in self.pipeline._connections:
+            logger.info(f"  Connection: {connection}")
 
     def __init__(self, retriever: Any, embedder: Any, generator: Any, prompt_template: str):
         """
@@ -71,6 +91,10 @@ class _RAGPipeline:
         self.pipeline.connect("llm.meta", "answer_builder.meta")
         self.pipeline.connect("retriever", "answer_builder.documents")
 
+        logger.info(f"  retriever: {retriever}")
+        logger.info(f"  generator: {generator}")
+        logger.info(f"  prompt_template: {prompt_template}")
+
     def run(self, query: str) -> Answer:
         """
         Performs RAG using the given query.
@@ -83,6 +107,9 @@ class _RAGPipeline:
             "answer_builder": {"query": query},
             "text_embedder": {"text": query},
         }
+
+        logger.info(f"rag run_values query: {query}")
+        
         return self.pipeline.run(run_values)["answer_builder"]["answers"][0]
 
 
@@ -126,7 +153,10 @@ def resolve_retriever(document_store, retriever_class: Optional[str] = None) -> 
     return retriever
 
 
-def resolve_generator(generation_model: str, llm_api_key: Optional[str] = None) -> Optional[Any]:
+def resolve_generator(generation_model: str, 
+                      llm_api_key: Optional[str] = None,
+                      api_base_url: Optional[str] = None,
+                      system_prompt: Optional[str] = None) -> Optional[Any]:
     """
     Resolves the generator to use for the given generation model.
     :param generation_model: The generation model to use.
@@ -135,7 +165,7 @@ def resolve_generator(generation_model: str, llm_api_key: Optional[str] = None) 
     generator = None
     for resolver_clazz in _GeneratorResolver.get_resolvers():
         resolver = resolver_clazz()
-        generator = resolver.resolve(generation_model, llm_api_key)
+        generator = resolver.resolve(generation_model, llm_api_key, api_base_url, system_prompt)
         if generator:
             break
     if not generator:
@@ -183,10 +213,19 @@ class _OpenAIResolved(_GeneratorResolver):
     Resolves the OpenAIGenerator.
     """
 
-    def resolve(self, model_key: str, api_key: str) -> Any:
+    def resolve(self, 
+                model_key: str, 
+                api_key: str, 
+                api_base_url: Optional[str] = None,
+                system_prompt: Optional[str] = None) -> Any:
         # does the model_key match the pattern OpenAI GPT pattern?
         if re.match(r"^gpt-4-.*", model_key) or re.match(r"^gpt-3.5-.*", model_key):
-            return OpenAIGenerator(model=model_key, api_key=api_key)
+            openai_generator = OpenAIGenerator(model=model_key, 
+                                               api_key=api_key, 
+                                               api_base_url=api_base_url,
+                                               system_prompt=system_prompt)
+            openai_generator.log_attributes()
+            return openai_generator
         return None
 
 

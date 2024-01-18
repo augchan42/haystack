@@ -1,5 +1,6 @@
 import os
 import re
+import logging
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 from typing import Optional, List, Any, Dict
@@ -15,6 +16,8 @@ from haystack.components.joiners import DocumentJoiner
 from haystack.components.writers import DocumentWriter
 from haystack.document_stores.types import DocumentStore
 
+# Set up logging
+logger = logging.getLogger(__name__)
 
 def download_files(sources: List[str]) -> List[str]:
     """
@@ -23,8 +26,12 @@ def download_files(sources: List[str]) -> List[str]:
     :type sources: List[str]
     :return: A list of paths to the downloaded files.
     """
+    logger.info(f"Starting to download files from sources: {sources}")
 
     fetcher = LinkContentFetcher(user_agents=["Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"])
+    
+    logger.info(f"Downloading files from sources: {sources}")
+    
     streams = fetcher.run(urls=sources)
 
     all_files = []
@@ -33,7 +40,9 @@ def download_files(sources: List[str]) -> List[str]:
         f = NamedTemporaryFile(delete=False, suffix=file_suffix)
         stream.to_file(Path(f.name))
         all_files.append(f.name)
+        logger.info(f"download_files adding file to list: {f}")
 
+    logger.info(f"Finished downloading files. Local paths: {all_files}")
     return all_files
 
 
@@ -43,6 +52,7 @@ def build_indexing_pipeline(
     embedding_model_kwargs: Optional[Dict[str, Any]] = None,
     supported_mime_types: Optional[List[str]] = None,
 ):
+    logger.info("Building indexing pipeline")
     """
     Returns a prebuilt pipeline for indexing documents into a DocumentStore. Indexing pipeline automatically detects
     the file type of the input files and converts them into Documents. The supported file types are: .txt,
@@ -99,13 +109,14 @@ class _IndexingPipeline:
         embedding_model_kwargs: Optional[Dict[str, Any]] = None,
         supported_mime_types: Optional[List[str]] = None,
     ):
+        logger.info("Init the indexing process.")
         """
         :param document_store: An instance of a DocumentStore to index documents into.
         :param embedding_model: The name of the model to use for document embeddings.
         :param supported_mime_types: List of MIME types to support in the pipeline. If not given,
                                      defaults to ["text/plain", "application/pdf", "text/html"].
         """
-
+        
         if supported_mime_types is None:
             supported_mime_types = ["text/plain", "text/html"]
 
@@ -127,14 +138,25 @@ class _IndexingPipeline:
 
         if "text/html" in supported_mime_types:
             from haystack.components.converters import HTMLToDocument
-
-            self.pipeline.add_component("html_file_converter", HTMLToDocument())
+            # html_to_document_converter = HTMLToDocument()
+            html_to_document_converter = HTMLToDocument(extractor_type="KeepEverythingExtractor")
+            html_to_document_converter.log_attributes()
+            self.pipeline.add_component("html_file_converter", html_to_document_converter)
             self.pipeline.connect("file_type_router.text/html", "html_file_converter.sources")
             converters_used.append("html_file_converter")
 
         # Add remaining common components
-        self.pipeline.add_component("document_joiner", DocumentJoiner())
-        self.pipeline.add_component("document_cleaner", DocumentCleaner())
+        document_joiner = DocumentJoiner()
+
+        # Log all attributes of the DocumentJoiner instance
+        logger.info("DocumentJoiner attributes:")
+        for attr, value in document_joiner.__dict__.items():
+            logger.info(f"  {attr}: {value}")
+
+        self.pipeline.add_component("document_joiner", document_joiner)
+        document_cleaner = DocumentCleaner()
+        document_cleaner.log_attributes()
+        self.pipeline.add_component("document_cleaner", document_cleaner)
         self.pipeline.add_component("document_splitter", DocumentSplitter())
 
         # Connect converters to joiner, if they exist
@@ -163,21 +185,28 @@ class _IndexingPipeline:
             raise RuntimeError("IndexingPipeline needs at least one output component.")
 
     def run(self, files: List[Union[str, Path]]) -> Dict[str, Any]:
+        logger.info("Entered the run method of _IndexingPipeline.")
         """
         Performs indexing of the given list of documents into the DocumentStore.
         :param files: A list of paths to files to index.
         :type files: List[Union[str, Path]]
 
         :return: the output of the pipeline run, which is a dictionary containing the number of documents written
-        """
+        """        
+        logger.info(f"Running the indexing pipeline on files: {files}")
         if not files:
             return {"documents_written": 0}
         input_files = self._process_files(files)
-        pipeline_output = self.pipeline.run(data={"file_type_router": {"sources": input_files}})
+        logger.info(f"Unique files found: {input_files}")
+        pipeline_output = self.pipeline.run(data={"file_type_router": {"sources": input_files}}, debug=True)
         aggregated_results = {}
         # combine the results of all outputs into one dictionary
-        for component_result in pipeline_output.values():
-            aggregated_results.update(component_result)
+        # for component_name, component_result in pipeline_output.items():
+        #     aggregated_results.update(component_result)
+        #     # Log each result as it's added
+        #     logger.info(f"Component '{component_name}' added results: {component_result}")
+
+        logger.info(f"Indexing pipeline run completed with results: {aggregated_results}")
         return aggregated_results
 
     def _find_embedder(self, embedding_model: str, init_kwargs: Optional[Dict[str, Any]] = None) -> Any:
@@ -232,4 +261,8 @@ class _IndexingPipeline:
         nested_file_lists = [self._list_files_recursively(file) for file in files]
         combined_files = [item for sublist in nested_file_lists for item in sublist]
         unique_files = list(set(combined_files))
+         # Print the list of files being processed
+        for file in unique_files:
+            logger.info(f"Processing file: {file}")
+        
         return unique_files

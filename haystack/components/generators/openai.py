@@ -15,6 +15,11 @@ logger = logging.getLogger(__name__)
 
 @component
 class OpenAIGenerator:
+
+    def log_attributes(self):
+        logger.info("Logging attributes of OpenAIGenerator instance:")
+        for attr_name, attr_value in self.__dict__.items():
+            logger.info(f"  {attr_name}: {attr_value}")
     """
     Enables text generation using OpenAI's large language models (LLMs). It supports gpt-4 and gpt-3.5-turbo
     family of models.

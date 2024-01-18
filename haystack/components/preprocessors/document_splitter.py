@@ -1,3 +1,5 @@
+import logging
+
 from copy import deepcopy
 from typing import List, Literal
 
@@ -5,6 +7,9 @@ from more_itertools import windowed
 
 from haystack import component, Document
 
+
+# Set up logging
+logger = logging.getLogger(__name__)
 
 @component
 class DocumentSplitter:
@@ -51,16 +56,43 @@ class DocumentSplitter:
             raise TypeError("DocumentSplitter expects a List of Documents as input.")
 
         split_docs = []
+        logger.debug(f"Processing documents to split: {documents}")   
         for doc in documents:
             if doc.content is None:
                 raise ValueError(
                     f"DocumentSplitter only works with text documents but document.content for document ID {doc.id} is None."
                 )
+            if not doc.content.strip():
+                logger.warning(f"Document ID {doc.id} has empty content. Skipping.")
+                continue
+            # Log the content of the document before splitting
+            logger.debug(f"Document ID {doc.id} content before split: {doc.content[:500]}")  # Log first 500 chars for brevity
+            
+            # Split the document into units and log the result
             units = self._split_into_units(doc.content, self.split_by)
+            logger.debug(f"Document ID {doc.id} split into units: {units[:5]}")  # Log first 5 units for brevity
+            
+            # Concatenate units into text splits and log the result
             text_splits = self._concatenate_units(units, self.split_length, self.split_overlap)
+            logger.debug(f"Document ID {doc.id} text splits: {text_splits[:3]}")  # Log first 3 splits for brevity
+            
+            # Copy metadata, add 'source_id', and log the result
             metadata = deepcopy(doc.meta)
             metadata["source_id"] = doc.id
-            split_docs += [Document(content=txt, meta=metadata) for txt in text_splits]
+            logger.debug(f"Document ID {doc.id} metadata after adding 'source_id': {metadata}")
+            
+            # Create new Document objects for each text split and log the result
+            new_documents = [Document(content=txt, meta=metadata) for txt in text_splits]
+            logger.debug(f"New Document objects created for document ID {doc.id}: {[doc.content[:100] for doc in new_documents]}")  # Log first 100 chars of each document for brevity
+            
+            split_docs += new_documents
+    
+            # units = self._split_into_units(doc.content, self.split_by)
+            # text_splits = self._concatenate_units(units, self.split_length, self.split_overlap)
+            # metadata = deepcopy(doc.meta)
+            # metadata["source_id"] = doc.id
+            # split_docs += [Document(content=txt, meta=metadata) for txt in text_splits]
+        logger.debug(f"Returning documents from split: {split_docs}")            
         return {"documents": split_docs}
 
     def _split_into_units(self, text: str, split_by: Literal["word", "sentence", "passage", "page"]) -> List[str]:
