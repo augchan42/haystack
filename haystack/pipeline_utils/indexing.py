@@ -199,7 +199,7 @@ class _IndexingPipeline:
         input_files = self._process_files(files)
         logger.info(f"Unique files found: {input_files}")
         pipeline_output = self.pipeline.run(data={"file_type_router": {"sources": input_files}}, debug=True)
-        aggregated_results = {}
+        aggregated_results: Dict[str, Any] = {}
         # combine the results of all outputs into one dictionary
         # for component_name, component_result in pipeline_output.items():
         #     aggregated_results.update(component_result)
