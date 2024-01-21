@@ -134,7 +134,8 @@ class _IndexingPipeline:
             from haystack.components.converters import AzureOCRDocumentConverter
 
             converter = AzureOCRDocumentConverter(
-                endpoint="https://cognitiveservicesformrecognizer-travelbox.cognitiveservices.azure.com/",
+                # endpoint="https://cognitiveservicesformrecognizer-travelbox.cognitiveservices.azure.com/",
+                endpoint="https://travelbox-formrecognizer.cognitiveservices.azure.com/",
                 model_id="prebuilt-layout")
             self.pipeline.add_component("pdf_file_converter", converter)
             self.pipeline.connect("file_type_router.application/pdf", "pdf_file_converter.sources")
