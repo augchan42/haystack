@@ -6,6 +6,8 @@ from haystack.document_stores.in_memory import InMemoryDocumentStore
 from haystack.pipeline_utils import build_rag_pipeline, build_indexing_pipeline
 from haystack.pipeline_utils.indexing import download_files
 
+from typing import Optional
+
 # Set up logging
 logging.basicConfig(level=logging.INFO) #set to DEBUG for more info
 logger = logging.getLogger(__name__)
@@ -17,27 +19,32 @@ print(f"System path: {sys.path}")
 # We are model agnostic :) In this getting started you can choose any OpenAI or Huggingface TGI generation model
 generation_model = "gpt-3.5-turbo"
 API_KEY = "sk-..."  # ADD YOUR KEY HERE
-API_BASE_URL = "http://192.168.77.209:1234/v1" #Uncomment if running local model with LM Studio or similar
-PROMPT_TEMPLATE = """
-                [INST]
-                Instruct:
-                Given 
-                  documents, answer the question.
+API_BASE_URL: Optional[str] = None
+PROMPT_TEMPLATE: Optional[str] = None
+SYSTEM_PROMPT: Optional[str] = None
 
-                Documents:
-                {% for doc in documents %}
-                    {{ doc.content }}
-                {% endfor %}
+# Uncomment and adjust below as needed
+# API_BASE_URL = "http://192.168.1.96:1234/v1" #Uncomment if running local model with LM Studio or similar
+# PROMPT_TEMPLATE = """
+#                 [INST]
+#                 Instruct:
+#                 Given 
+#                   documents, answer the question.
 
-                Question: {{question}}
+#                 Documents:
+#                 {% for doc in documents %}
+#                     {{ doc.content }}
+#                 {% endfor %}
 
-                Output:
-                [/INST]
-                """
-SYSTEM_PROMPT = """
-                You will be given a list of documents to answer a question.  Please reference ONLY
-                these documents when formulating your answer.
-                """
+#                 Question: {{question}}
+
+#                 Output:
+#                 [/INST]
+#                 """
+# SYSTEM_PROMPT = """
+#                 You will be given a list of documents to answer a question.  Please reference ONLY
+#                 these documents when formulating your answer.
+#                 """
 
 # We support many different databases. Here, we load a simple and lightweight in-memory database.
 # Use cosine for e5-base-v2 https://discord.com/channels/993534733298450452/1141635410024468491/1141761753772998787
@@ -74,23 +81,16 @@ document_count = document_store.count_documents()
 logger.info(f"Number of documents in the store: {document_count}")
 
 logger.info(f"Building RAG Pipeline: {files}")
-rag_pipeline_kwargs = {
-    "document_store": document_store,
-    "embedding_model": "intfloat/e5-base-v2",
-    "generation_model": generation_model,
-    "llm_api_key": API_KEY, 
-}
-# Include api_base_url only if it's defined
-if 'API_BASE_URL' in locals() or 'API_BASE_URL' in globals():
-    rag_pipeline_kwargs['api_base_url'] = API_BASE_URL
 
-if 'PROMPT_TEMPLATE' in locals() or 'PROMPT_TEMPLATE' in globals():
-    rag_pipeline_kwargs['prompt_template'] = PROMPT_TEMPLATE
-
-if 'SYSTEM_PROMPT' in locals() or 'SYSTEM_PROMPT' in globals():
-    rag_pipeline_kwargs['system_prompt'] = SYSTEM_PROMPT
-
-rag_pipeline = build_rag_pipeline(**rag_pipeline_kwargs)
+rag_pipeline = build_rag_pipeline(
+    document_store=document_store,
+    embedding_model="intfloat/e5-base-v2",
+    generation_model=generation_model,
+    llm_api_key=API_KEY,
+    api_base_url=API_BASE_URL,
+    prompt_template=PROMPT_TEMPLATE,
+    system_prompt=SYSTEM_PROMPT
+)
 
 rag_pipeline.log_attributes()
 

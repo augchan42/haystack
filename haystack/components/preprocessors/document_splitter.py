@@ -83,7 +83,7 @@ class DocumentSplitter:
             
             # Create new Document objects for each text split and log the result
             new_documents = [Document(content=txt, meta=metadata) for txt in text_splits]
-            logger.debug(f"New Document objects created for document ID {doc.id}: {[doc.content[:100] for doc in new_documents]}")  # Log first 100 chars of each document for brevity
+            logger.debug(f"New Document objects created for document ID {doc.id}: {[d.content[:100] if d.content else '' for d in new_documents]}") # Log first 100 chars of each document for brevity
             
             split_docs += new_documents
     
