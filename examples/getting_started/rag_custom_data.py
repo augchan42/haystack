@@ -1,5 +1,6 @@
 import logging
 import sys
+import os
 
 from haystack.document_stores.in_memory import InMemoryDocumentStore
 from haystack.pipeline_utils import build_rag_pipeline, build_indexing_pipeline
@@ -16,7 +17,7 @@ print(f"System path: {sys.path}")
 # We are model agnostic :) In this getting started you can choose any OpenAI or Huggingface TGI generation model
 generation_model = "gpt-3.5-turbo"
 API_KEY = "sk-..."  # ADD YOUR KEY HERE
-API_BASE_URL = "http://192.168.1.96:1234/v1" #Uncomment if running local model with LM Studio or similar
+API_BASE_URL = "http://192.168.77.209:1234/v1" #Uncomment if running local model with LM Studio or similar
 PROMPT_TEMPLATE = """
                 [INST]
                 Instruct:
@@ -49,17 +50,20 @@ for attr, value in document_store.__dict__.items():
 
 # Download example files from web
 # files = download_files(sources=["http://www.paulgraham.com/superlinear.html"])
-sources = ["http://www.paulgraham.com/superlinear.html"]
-logger.info(f"Downloading files from sources: {sources}")
-files = download_files(sources=sources)
-logger.info(f"Downloaded files: {files}")
+# sources = ["http://www.paulgraham.com/superlinear.html"]
+# logger.info(f"Downloading files from sources: {sources}")
+# files = download_files(sources=sources)
+# logger.info(f"Downloaded files: {files}")
+
+directory_path = '/home/hosermage/travelbox/plans'
+files = [os.path.join(directory_path, file) for file in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, file))]
 
 # Pipelines are our main abstratcion.
 # Here we create a pipeline that can index TXT and HTML. You can also use your own private files.
 indexing_pipeline = build_indexing_pipeline(
     document_store=document_store,
     embedding_model="intfloat/e5-base-v2",
-    supported_mime_types=["text/plain", "text/html"],  # "application/pdf"
+    supported_mime_types=["text/plain", "text/html", "application/pdf"],  # "application/pdf"
 )
 logger.info(f"Indexing files: {files}")
 indexing_pipeline.run(files=files)  # you can also supply files=[path_to_directory], which is searched recursively
@@ -92,8 +96,26 @@ rag_pipeline.log_attributes()
 
 logger.info(f"Running RAG Pipeline: {files}")
 # For details, like which documents were used to generate the answer, look into the result object
-result = rag_pipeline.run(query="What are superlinear returns and why are they important?")
+# result = rag_pipeline.run(query="What are superlinear returns and why are they important?")
+# result = rag_pipeline.run(query="which of the two travel plans are best for a vacation scuba diving in the philipines")
 
-# logger.info(f"Pipeline returned: {result}")
+# # logger.info(f"Pipeline returned: {result}")
 
-print(result.data)
+# print(result.data)
+while True:
+    # Get the user's query
+    user_query = input("User: ")
+    
+    # Check if the user wants to end the conversation
+    if user_query.lower() in ['quit', 'exit', 'end']:
+        print("Bot: Goodbye!")
+        break
+    
+    # Run the query through the RAG pipeline
+    result = rag_pipeline.run(query=user_query)
+    
+    # Extract the answer from the result
+    answer = result['answers'][0].answer if result['answers'] else "Sorry, I don't know."
+    
+    # Output the answer
+    print(f"Bot: {answer}")
