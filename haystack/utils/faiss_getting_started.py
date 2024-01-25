@@ -17,12 +17,8 @@ def build_pipeline(provider, API_KEY, document_store, API_BASE):
     provider = provider.lower()
     # A retriever selects the right documents when given a question.
     # retriever = BM25Retriever(document_store=document_store, top_k=5)
-    embedding_model = "intfloat/e5-base-v2" # Example model    
-    retriever = EmbeddingRetriever(
-            document_store=document_store,
-            embedding_model=embedding_model,
-            use_gpu=True
-        )
+    embedding_model = "intfloat/e5-base-v2"  # Example model
+    retriever = EmbeddingRetriever(document_store=document_store, embedding_model=embedding_model, use_gpu=True)
 
     # Load prompt for doing retrieval augmented generation from https://prompthub.deepset.ai/?prompt=deepset%2Fquestion-answering-with-references
     question_answering_with_references = PromptTemplate(
@@ -67,7 +63,7 @@ def build_pipeline(provider, API_KEY, document_store, API_BASE):
 def add_example_data(document_store, dir):
     # Importing top-level causes a circular import
     from haystack.nodes import TextConverter, PreProcessor
-    
+
     if dir == "data/GoT_getting_started":
         # Download and add Game of Thrones TXT files
         fetch_archive_from_http(
@@ -77,7 +73,7 @@ def add_example_data(document_store, dir):
         files_to_index = [dir + "/" + f for f in os.listdir(dir)]
         converter = TextConverter(remove_numeric_tables=True)
         docs = [converter.convert(file_path=file, meta={"filename": file})[0] for file in files_to_index]
-    else:        # Here you can add a local folder with your files(.txt, .pdf, .docx).
+    else:  # Here you can add a local folder with your files(.txt, .pdf, .docx).
         # You might need to install additional packages with "pip install farm-haystack[ocr,preprocessing,file-conversion,pdf]".
         # For more details, see: https://haystack.deepset.ai/tutorials/08_preprocessing.
         # Be aware that some of your data will be sent to external APIs if you use this functionality!
