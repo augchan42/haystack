@@ -5,6 +5,8 @@ import os
 import re
 import sys
 import time
+import glob
+
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 from urllib.parse import urlparse
@@ -142,6 +144,23 @@ class Crawler(BaseComponent):
 
     def __del__(self):
         self.driver.quit()
+
+    def _check_url_already_crawled(
+        self, url: str, output_dir: Path, crawler_naming_function: Optional[Callable[[str, str], str]]
+    ) -> bool:
+        """
+        Check if the URL has already been crawled by looking for an existing file in the output directory.
+        """
+        if crawler_naming_function is not None:
+            file_name_prefix = crawler_naming_function(url, "")  # Dummy content as we only need the file name part
+        else:
+            file_name_link = re.sub("[<>:'/\\|?*\0 ]", "_", url[:129])
+            file_name_hash = hashlib.md5(f"{url}".encode("utf-8")).hexdigest()
+            file_name_prefix = f"{file_name_link}_{file_name_hash[-6:]}"
+
+        file_path_pattern = str(output_dir / f"{file_name_prefix}*.json")
+        existing_files = glob.glob(file_path_pattern)
+        return len(existing_files) > 0
 
     def crawl(
         self,
@@ -327,6 +346,20 @@ class Crawler(BaseComponent):
 
         return file_path
 
+    def _get_file_path(
+        self, url: str, output_dir: Path, crawler_naming_function: Optional[Callable[[str, str], str]]
+    ) -> Path:
+        if crawler_naming_function is not None:
+            file_name_prefix = crawler_naming_function(url, "")  # Dummy content as we only need the file name part
+        else:
+            file_name_link = re.sub("[<>:'/\\|?*\0 ]", "_", url[:129])
+            file_name_hash = hashlib.md5(f"{url}".encode("utf-8")).hexdigest()
+            file_name_prefix = f"{file_name_link}_{file_name_hash[-6:]}"
+
+        file_path_pattern = str(output_dir / f"{file_name_prefix}.json")
+        existing_files = glob.glob(file_path_pattern)
+        return Path(existing_files[0]) if existing_files else None
+
     def _crawl_urls(
         self,
         urls: List[str],
@@ -341,30 +374,35 @@ class Crawler(BaseComponent):
     ) -> List[Document]:
         documents: List[Document] = []
         for link in urls:
-            logger.info("Scraping contents from '%s'", link)
-            self.driver.get(link)
-            if loading_wait_time is not None:
-                time.sleep(loading_wait_time)
-            el = self.driver.find_element(by=By.TAG_NAME, value="body")
-
-            if extract_hidden_text:
-                text = el.get_attribute("textContent")
+            # Check if the URL has already been crawled by looking for an existing file
+            if self._check_url_already_crawled(link, output_dir, crawler_naming_function):
+                logger.info(f"Found existing file for URL: {link}. Skipping doc creation.")
             else:
-                text = el.text
-
-            document = self._create_document(url=link, text=text or "", base_url=base_url, id_hash_keys=id_hash_keys)
-
-            if output_dir:
-                file_path = self._write_file(
-                    document,
-                    output_dir,
-                    crawler_naming_function,
-                    file_path_meta_field_name=file_path_meta_field_name,
-                    overwrite_existing_files=overwrite_existing_files,
+                logger.info("Visiting '%s'", link)
+                self.driver.get(link)
+                if loading_wait_time is not None:
+                    time.sleep(loading_wait_time)
+                el = self.driver.find_element(by=By.TAG_NAME, value="body")
+                if extract_hidden_text:
+                    text = el.get_attribute("textContent")
+                else:
+                    text = el.text
+                document = self._create_document(
+                    url=link, text=text or "", base_url=base_url, id_hash_keys=id_hash_keys
                 )
-                logger.debug("Saved content to '%s'", file_path)
+                document.meta["content_updated"] = True
 
-            documents.append(document)
+                if output_dir:
+                    file_path = self._write_file(
+                        document,
+                        output_dir,
+                        crawler_naming_function,
+                        file_path_meta_field_name=file_path_meta_field_name,
+                        overwrite_existing_files=overwrite_existing_files,
+                    )
+                    logger.debug("Saved content to '%s'", file_path)
+
+                documents.append(document)
 
         logger.debug("Crawler results: %s Documents", len(documents))
 
