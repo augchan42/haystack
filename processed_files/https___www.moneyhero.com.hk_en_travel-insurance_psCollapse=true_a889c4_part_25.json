@@ -1,0 +1,31 @@
+{
+    "content": "\nDoes travel insurance cover countries with outbound travel alerts?\n\nDoes travel insurance cover rental cars?\n\nHow to claim compensation when my flight is delayed?\n\nWhen should I buy my travel insurance?\n\n\nCredit Cards\n\nPersonal Loans\n\nTravel Insurance\n\nCar Insurance\n\nHome Insurance\n\nDomestic Helper Insurance\n\nMortgages\n\nFinancial Tools\n\nSecurities Accounts\n\nGuides\n\nAbout Us\n\n\n\n\nDisclaimer: MoneyHero makes every effort to keep information on our website accurate and up-to-date. This information may be different from what you see when you visit a financial institution or service provider’s site. APR and monthly payments shown in personal instalment loan comparison pages are estimated based on calculation of information you enter. All financial products and services are presented without warranty. When evaluating offers, please review the financial institution’s Terms and Conditions. If you find discrepancies in information, please contact the financial institution directly.\n",
+    "content_type": "text",
+    "score": null,
+    "meta": {
+        "url": "https://www.moneyhero.com.hk/en/travel-insurance?psCollapse=true",
+        "content_updated": true,
+        "_split_id": 25,
+        "_split_overlap": [
+            {
+                "doc_id": "9e46871513dd3d6fa82767b68bbad8",
+                "range": [
+                    0,
+                    111
+                ]
+            },
+            {
+                "doc_id": "c7ab36d94df086c66d2bd73a0aad290f",
+                "range": [
+                    826,
+                    1006
+                ]
+            }
+        ]
+    },
+    "id_hash_keys": [
+        "content"
+    ],
+    "embedding": null,
+    "id": "d4d0ea61d9532d7289f7c1d37baa8582"
+}

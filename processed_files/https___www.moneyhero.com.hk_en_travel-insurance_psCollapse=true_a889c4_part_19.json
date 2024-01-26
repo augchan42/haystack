@@ -1,0 +1,31 @@
+{
+    "content": "If your digital gadgets are damaged, you would also need to take a picture as a record of its condition.\nFAQ\n1. Which travel insurance offers Covid-19 Coverage?\nMoneyHero has sorted out a few Covid-19-covered travel insurance products for your easy comparison. Please click here to learn more details on our Covid-19 Travel Insurance Comparison page.\n2. When should I buy travel insurance?\nYou should buy travel insurance BEFORE starting your journey. The insurance plan is activated at the moment you purchase it, so the earlier you buy the better. You are suggested to purchase travel insurance right after you purchased your flight ticket, so even the unexpected changes before your departure may be covered. ",
+    "content_type": "text",
+    "score": null,
+    "meta": {
+        "url": "https://www.moneyhero.com.hk/en/travel-insurance?psCollapse=true",
+        "content_updated": true,
+        "_split_id": 19,
+        "_split_overlap": [
+            {
+                "doc_id": "712b0522e355bb48fb76e3ef4976a5b4",
+                "range": [
+                    0,
+                    111
+                ]
+            },
+            {
+                "doc_id": "aa00f48e94a0233d9a668180aaa46544",
+                "range": [
+                    452,
+                    711
+                ]
+            }
+        ]
+    },
+    "id_hash_keys": [
+        "content"
+    ],
+    "embedding": null,
+    "id": "8eb2be5d6da0339e57ab53fdb6c3bc0f"
+}

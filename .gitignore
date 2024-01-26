@@ -158,7 +158,7 @@ faiss_document_store.db
 
 # http cache (requests-cache)
 **/http_cache.sqlite
-crawled_files
+#crawled_files
 crawled_files_hidden_text
-pdfs
-processed_files
+#pdfs
+#processed_files

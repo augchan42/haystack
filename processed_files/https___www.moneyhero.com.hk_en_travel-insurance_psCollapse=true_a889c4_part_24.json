@@ -1,0 +1,31 @@
+{
+    "content": "Need some help?\nNo worries, we've got you covered!\nHow to find the right financial products for you?\n\nBenefits Of Comparing Travel Insurance Plans\n\nWhat are not covered in a travel insurance?\n\nUseful Tips for Choosing Travel Coverage\n\nTypes Of Travel Insurance\n\nWhat are the differences between annual and single travel insurance plan?\n\nTravel Insurance Offers\n\nMain Coverage Of Travel Insurance\n\nCompare & Buy Plans in Hong Kong\n\nWhat are the benefits of buying travel insurance online?\n\nDoes travel insurance cover mobile phones?\n\nWhat should I do if my phone is lost while traveling?\n\nDoes travel insurance cover countries with outbound travel alerts?\n\nDoes travel insurance cover rental cars?\n",
+    "content_type": "text",
+    "score": null,
+    "meta": {
+        "url": "https://www.moneyhero.com.hk/en/travel-insurance?psCollapse=true",
+        "content_updated": true,
+        "_split_id": 24,
+        "_split_overlap": [
+            {
+                "doc_id": "4d9d2a96ab2bc1c1d101caed1b195bd1",
+                "range": [
+                    0,
+                    50
+                ]
+            },
+            {
+                "doc_id": "d4d0ea61d9532d7289f7c1d37baa8582",
+                "range": [
+                    598,
+                    709
+                ]
+            }
+        ]
+    },
+    "id_hash_keys": [
+        "content"
+    ],
+    "embedding": null,
+    "id": "9e46871513dd3d6fa82767b68bbad8"
+}

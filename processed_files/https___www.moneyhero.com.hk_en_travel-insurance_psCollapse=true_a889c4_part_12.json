@@ -1,0 +1,31 @@
+{
+    "content": "Normally, Hong Kong travel insurance plans require any activities in the air, unless an insured person is traveling as a fare-paying passenger in a licensed aircraft operated by a recognised airline, or participating in an activity of which the maneuver or navigation is managed and controlled by another licensed person and the provider of such activity, to be authorized by the relevant local authority.\nPart 3 : How to claim travel insurance online?\nStep 1: Check the time limit for submitting claim form\nTravel insurance companies usually require you to make the claim within a specific time limit, usually within 21 to 30 days of the occurrence.\nStep 2: Prepare original documents / proofs / reports\nHere are some common documents that are needed for claiming travel insurance online. Each insurance company may have their own list of required documents, please checkout their official website for specific requirements. Click here to find the contact information of the insurance companies.\nDocuments required for medical claims: Boarding pass (shows the travel period), official medical receipt (with detailed medical expanse), medical report and detailed diagnostic report / referral letter / discharge certificate from a registered doctor.\nDocuments required for flight delay / baggage delay: Flight tickets and boarding pass with the actual boarding time, delay confirmation report issued by the airline, official receipt of the additional expense due to the delay (e.g. hotel).\nDocuments required for lost / damage of personal belongings: Clear photo of the lost / damaged item, purchase receipt, repair receipt, boarding pass.\n",
+    "content_type": "text",
+    "score": null,
+    "meta": {
+        "url": "https://www.moneyhero.com.hk/en/travel-insurance?psCollapse=true",
+        "content_updated": true,
+        "_split_id": 12,
+        "_split_overlap": [
+            {
+                "doc_id": "71ee208ade3264e55c450fdb29128a87",
+                "range": [
+                    0,
+                    452
+                ]
+            },
+            {
+                "doc_id": "997a6198460d008da166e85144d701d8",
+                "range": [
+                    1481,
+                    1638
+                ]
+            }
+        ]
+    },
+    "id_hash_keys": [
+        "content"
+    ],
+    "embedding": null,
+    "id": "3b96b51c4fb26aa0a22bdc407180876a"
+}

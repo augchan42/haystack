@@ -1,0 +1,31 @@
+{
+    "content": "The insurance plan is activated at the moment you purchase it, so the earlier you buy the better. You are suggested to purchase travel insurance right after you purchased your flight ticket, so even the unexpected changes before your departure may be covered. For example, FWD provides reimbursement of irrecoverable prepaid costs due to cancellation of trip in the event of the Insured Person being diagnosed with COVID-19 30 days before the start of the journey.\nIf your flight is canceled or delayed due to adverse weather conditions, you may be covered if you have already purchased travel insurance before any weather warnings are issued.\nAlso, if unfortunately a Black Outbound Alert is issued to your destination, you will be covered if you have already purchased travel insurance that covers trip cancellation due to Black Outbound Alert before it is issued. However, if you purchase the travel insurance after the Black Outbound Alert is issued, you may not be covered.\n3. Can I buy travel insurance during my trip?\nNo. Since travel insurance policies are normally only valid for travel originating from and returning to Hong Kong, any purchase of travel insurance after departure will not be accepted. ",
+    "content_type": "text",
+    "score": null,
+    "meta": {
+        "url": "https://www.moneyhero.com.hk/en/travel-insurance?psCollapse=true",
+        "content_updated": true,
+        "_split_id": 20,
+        "_split_overlap": [
+            {
+                "doc_id": "8eb2be5d6da0339e57ab53fdb6c3bc0f",
+                "range": [
+                    0,
+                    259
+                ]
+            },
+            {
+                "doc_id": "9da49063b124043d93f6d8dc968ded4a",
+                "range": [
+                    1025,
+                    1211
+                ]
+            }
+        ]
+    },
+    "id_hash_keys": [
+        "content"
+    ],
+    "embedding": null,
+    "id": "aa00f48e94a0233d9a668180aaa46544"
+}

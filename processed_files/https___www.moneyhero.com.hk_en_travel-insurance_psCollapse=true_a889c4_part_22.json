@@ -1,0 +1,31 @@
+{
+    "content": "Employers should purchase travel insurance for employees who travel business trips frequently to protect mutual interests.\nSingle-trip travel insurance is best for people who do not travel frequently and prefer short trips or short-distance travel. As the price is generally lower than the annual one, you can purchase single-trip travel insurance at a lower cost while bringing you peace of mind during your trip.\n5. Which travel insurance cover flight delay and trip cancellation? What are the claim procedures?\nNormally a travel insurance company covers flight delays resulting from adverse weather conditions, natural disasters, closure of airport, hi-jack, technical or other mechanical derangement.\nTrip cancellation will be covered if it is due to death, serious sickness or injury of the Insured Person, adverse weather conditions, natural disaster or unexpected outbreak of infectious diseases, riot at the destination that prevents the Insured Person from continuing the journey or Black Outbound Alert for the destination is in effect during the journey.\nMost insurance companies have policies that cover flight delay and trip cancellation, including Allianz, STARR, Allied World, FWD, Zurich and AXA. You may refer to this article for more information.\n",
+    "content_type": "text",
+    "score": null,
+    "meta": {
+        "url": "https://www.moneyhero.com.hk/en/travel-insurance?psCollapse=true",
+        "content_updated": true,
+        "_split_id": 22,
+        "_split_overlap": [
+            {
+                "doc_id": "9da49063b124043d93f6d8dc968ded4a",
+                "range": [
+                    0,
+                    248
+                ]
+            },
+            {
+                "doc_id": "4d9d2a96ab2bc1c1d101caed1b195bd1",
+                "range": [
+                    1066,
+                    1264
+                ]
+            }
+        ]
+    },
+    "id_hash_keys": [
+        "content"
+    ],
+    "embedding": null,
+    "id": "388f56de78aacba8fa25f22cae9f80e9"
+}

@@ -1,0 +1,31 @@
+{
+    "content": "No. Since travel insurance policies are normally only valid for travel originating from and returning to Hong Kong, any purchase of travel insurance after departure will not be accepted. There will be no compensation even if you have encountered any accidents during the trip. So please do not leave everything until the last minute and buy travel insurance as soon as your departure and return date is confirmed.\n4. What is the difference between Single Trip and Annual Travel Insurance? Is annual travel insurance cheaper?\nAnnual travel insurance is best for frequent travelers and business travelers as annual travel insurance covers unlimited trips per year. Employers should purchase travel insurance for employees who travel business trips frequently to protect mutual interests.\nSingle-trip travel insurance is best for people who do not travel frequently and prefer short trips or short-distance travel. ",
+    "content_type": "text",
+    "score": null,
+    "meta": {
+        "url": "https://www.moneyhero.com.hk/en/travel-insurance?psCollapse=true",
+        "content_updated": true,
+        "_split_id": 21,
+        "_split_overlap": [
+            {
+                "doc_id": "aa00f48e94a0233d9a668180aaa46544",
+                "range": [
+                    0,
+                    186
+                ]
+            },
+            {
+                "doc_id": "388f56de78aacba8fa25f22cae9f80e9",
+                "range": [
+                    663,
+                    911
+                ]
+            }
+        ]
+    },
+    "id_hash_keys": [
+        "content"
+    ],
+    "embedding": null,
+    "id": "9da49063b124043d93f6d8dc968ded4a"
+}

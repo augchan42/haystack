@@ -1,0 +1,31 @@
+{
+    "content": "Most insurance companies have policies that cover flight delay and trip cancellation, including Allianz, STARR, Allied World, FWD, Zurich and AXA. You may refer to this article for more information.\n6. Can I specifically require coverages on top of my current travel insurance plans?\nApart from the regular benefits included in the travel insurance plans, some travel insurance companies allow insured person to add extra benefit items. So you can partially customize your insurance plan to fit your needs even better. For example, AVO offers winter sports extra benefits, water sports extra benefits and pre-wedding photoshoot and wedding extra benefits. These optional add-ons let you choose your own travel insurance coverage based on your travel purpose.\nNeed some help?\nNo worries, we've got you covered!\n",
+    "content_type": "text",
+    "score": null,
+    "meta": {
+        "url": "https://www.moneyhero.com.hk/en/travel-insurance?psCollapse=true",
+        "content_updated": true,
+        "_split_id": 23,
+        "_split_overlap": [
+            {
+                "doc_id": "388f56de78aacba8fa25f22cae9f80e9",
+                "range": [
+                    0,
+                    198
+                ]
+            },
+            {
+                "doc_id": "9e46871513dd3d6fa82767b68bbad8",
+                "range": [
+                    759,
+                    809
+                ]
+            }
+        ]
+    },
+    "id_hash_keys": [
+        "content"
+    ],
+    "embedding": null,
+    "id": "4d9d2a96ab2bc1c1d101caed1b195bd1"
+}

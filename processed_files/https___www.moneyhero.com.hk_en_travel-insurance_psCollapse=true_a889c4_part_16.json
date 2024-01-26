@@ -1,0 +1,31 @@
+{
+    "content": "STARR’s “Essential” and “Extra” Travel Insurance plans do not cover Rental Vehicle Excess.\nMedical Coverage\nIf there is any serious injury that leads to hospitalization, you will have to pay attention to the medical expenses coverage, and check the details of medical treatment overseas hospital cash allowance and worldwide emergency assistance service.\nKeep the traffic accident record\nTravel insurance companies normally require the insured person to provide car rental receipt, car rental insurance proof, traffic accident record and NOC (Non-Operation Charge) receipt etc. Please ensure that the report number, police station information, accident description, car rental company reference number and car rental company corporate seal is included in the traffic accident record.\nPart 5 : What should I do if I get injured during the trip?\nCall for prior approval\nPrior approval from some insurance company may be required before any assistance or hospital admission deposit is guaranteed. The insured person or his/her representative should call the corresponding emergency hotline to provide the insurance certificate number or the policy number, the name and HKID card or passport number of the insured person, and the nature and the location of the emergency for validation.\nKeep official documents\nAll the original copies of the related medical documents must be properly preserved, so it can be used to claim the medical expense after returning to Hong Kong. Those medical documents must be able to show the disease or injury the insured person suffered, like medical certificate, receipts or bills, doctor’s certificate, medical report etc. You should also keep the proof of traveling, like boarding pass and statement of travel records, to submit them along with the claim form.\n",
+    "content_type": "text",
+    "score": null,
+    "meta": {
+        "url": "https://www.moneyhero.com.hk/en/travel-insurance?psCollapse=true",
+        "content_updated": true,
+        "_split_id": 16,
+        "_split_overlap": [
+            {
+                "doc_id": "bf10fd3c34394e6e9640e4bed6c2ac7",
+                "range": [
+                    0,
+                    354
+                ]
+            },
+            {
+                "doc_id": "f55e3958440b21966ee08621dd610ad3",
+                "range": [
+                    1469,
+                    1790
+                ]
+            }
+        ]
+    },
+    "id_hash_keys": [
+        "content"
+    ],
+    "embedding": null,
+    "id": "4aba14e90d68b4b60c1c75af63ec455d"
+}

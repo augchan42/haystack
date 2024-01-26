@@ -1,0 +1,31 @@
+{
+    "content": "Those medical documents must be able to show the disease or injury the insured person suffered, like medical certificate, receipts or bills, doctor’s certificate, medical report etc. You should also keep the proof of traveling, like boarding pass and statement of travel records, to submit them along with the claim form.\nSome travel insurance plans may not cover all injuries or medical expenses during your trip. For example, most insurance companies cover leisure and amateur sports activities during the journey including winter sports, bungee jumping, hiking, rock climbing, horse riding, scuba diving and other water sports etc., but exclude any dangerous sports with altitude limit not over 5,000 meters above sea level or depth not greater than 30 meters below sea-level. So any injuries that are caused by sports activities excluded from the plan will not be covered.\nPart 6 : What should I do if I lost digital gadget during the trip?\nIf you lost your digital gadget during the trip, you should report it to the police station within 24 hours and keep all the related documents and official receipts for filing the travel insurance claim. Please keep in mind that if there is evidence of the insured person not taking proper care of the said property, travel insurance companies have the right to not cover the loss.\nCheck if your digital gadget is covered\nMost travel insurance companies will list out the digital gadgets that are covered (and not covered) in their policy wordings. ",
+    "content_type": "text",
+    "score": null,
+    "meta": {
+        "url": "https://www.moneyhero.com.hk/en/travel-insurance?psCollapse=true",
+        "content_updated": true,
+        "_split_id": 17,
+        "_split_overlap": [
+            {
+                "doc_id": "4aba14e90d68b4b60c1c75af63ec455d",
+                "range": [
+                    0,
+                    321
+                ]
+            },
+            {
+                "doc_id": "712b0522e355bb48fb76e3ef4976a5b4",
+                "range": [
+                    1149,
+                    1493
+                ]
+            }
+        ]
+    },
+    "id_hash_keys": [
+        "content"
+    ],
+    "embedding": null,
+    "id": "f55e3958440b21966ee08621dd610ad3"
+}

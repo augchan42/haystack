@@ -1,0 +1,31 @@
+{
+    "content": "For example, you should check if the Hong Kong Government issued any Outbound Travel Alert to certain politically unstable countries and if the travel insurance policy covers any accidents that occur in countries under Outbound Travel Alert.\nThere are 2 major things you need to consider when comparing travel insurance, your travel destination and your travel activities.\nOutbound Travel Alert / Terrorist Attack\nThe Hong Kong Government introduced The Outbound Travel Alert System to help people better understand the risk or threat to personal safety in traveling to popular travel destinations. It classified countries / territories into 3 alert levels, Amber, Red and Black, based on the severity of the threat in a place that may affect personal safety.\nSome travel insurance plans cover countries that are under Outbound Travel Alert, normally there will be compensation for the expenses from trip cancellations due to the issue of Travel Alert before departure, and the accommodation charges and additional expenses from curtailment of trip. However, you should pay attention to the terms and conditions of reimbursement, as some travel insurance only covers Black Outbound Alert. Not all travel insurance policies cover the acts of terrorism, and even if it does, it is not applicable under certain circumstances.\nThe definition of acts of terrorism\nEach travel insurance company may have their own definition of acts of terrorism. Some of them may see whether war, military power, nuclear weapons etc. are involved. ",
+    "content_type": "text",
+    "score": null,
+    "meta": {
+        "url": "https://www.moneyhero.com.hk/en/travel-insurance?psCollapse=true",
+        "content_updated": true,
+        "_split_id": 14,
+        "_split_overlap": [
+            {
+                "doc_id": "997a6198460d008da166e85144d701d8",
+                "range": [
+                    0,
+                    372
+                ]
+            },
+            {
+                "doc_id": "bf10fd3c34394e6e9640e4bed6c2ac7",
+                "range": [
+                    1441,
+                    1525
+                ]
+            }
+        ]
+    },
+    "id_hash_keys": [
+        "content"
+    ],
+    "embedding": null,
+    "id": "848472fd4bd2798399c7e5ce935f2dbe"
+}

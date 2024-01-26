@@ -1,0 +1,24 @@
+{
+    "content": "When evaluating offers, please review the financial institution’s Terms and Conditions. If you find discrepancies in information, please contact the financial institution directly.\n© 2013 - 2024 MoneyHero Global Limited (registered in Hong Kong under company number 1864714) (“MHGL”). All rights reserved. MoneyHero Insurance Brokers Limited (registered in Hong Kong under company number 2196683) (“MHIBL”) is a wholly owned subsidiary of MHGL. MHIBL is an authorized insurance broker with Insurance Authority License Number FB1740 whose business it is to arrange insurance products and services for its clients. MHGL is not an insurance company, agent or broker. Other than the provision of marketing services to virtual insurance companies that do not work with insurance intermediaries, MHGL does not carry on an insurance business and all insurance-related activities displayed, offered or referred to on this site are carried out solely by MHIBL in its capacity as an insurance broker. Use of this site constitutes acceptance of our Terms of Use and Privacy Policy.\nfe bdf301a",
+    "content_type": "text",
+    "score": null,
+    "meta": {
+        "url": "https://www.moneyhero.com.hk/en/travel-insurance?psCollapse=true",
+        "content_updated": true,
+        "_split_id": 26,
+        "_split_overlap": [
+            {
+                "doc_id": "d4d0ea61d9532d7289f7c1d37baa8582",
+                "range": [
+                    0,
+                    180
+                ]
+            }
+        ]
+    },
+    "id_hash_keys": [
+        "content"
+    ],
+    "embedding": null,
+    "id": "c7ab36d94df086c66d2bd73a0aad290f"
+}
