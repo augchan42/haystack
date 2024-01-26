@@ -1,6 +1,5 @@
 import logging
 import os
-import hashlib
 
 from haystack.utils import convert_files_to_docs
 from haystack.utils import fetch_archive_from_http
@@ -11,19 +10,20 @@ logger = logging.getLogger(__name__)
 
 def build_pipeline(provider, API_KEY, document_store, API_BASE):
     # Importing top-level causes a circular import
-    from haystack.nodes import AnswerParser, PromptNode, PromptTemplate, BM25Retriever
+    from haystack.nodes import AnswerParser, PromptNode, PromptTemplate
     from haystack.pipelines import Pipeline
 
     provider = provider.lower()
     # A retriever selects the right documents when given a question.
     # retriever = BM25Retriever(document_store=document_store, top_k=5)
     embedding_model = "intfloat/e5-base-v2"  # Example model
-    retriever = EmbeddingRetriever(document_store=document_store, embedding_model=embedding_model, use_gpu=True)
+    retriever = EmbeddingRetriever(
+        top_k=5, document_store=document_store, embedding_model=embedding_model, use_gpu=True
+    )
 
     # Load prompt for doing retrieval augmented generation from https://prompthub.deepset.ai/?prompt=deepset%2Fquestion-answering-with-references
     question_answering_with_references = PromptTemplate(
-        prompt="deepset/question-answering-with-references",
-        output_parser=AnswerParser(reference_pattern=r"Document\[(\d+)\]"),
+        prompt="question-answering-with-references", output_parser=AnswerParser(reference_pattern=r"Document\[(\d+)\]")
     )
     # Load the LLM model
     if provider == "anthropic":
@@ -49,6 +49,7 @@ def build_pipeline(provider, API_KEY, document_store, API_BASE):
             api_key=API_KEY,
             api_base=API_BASE,
             default_prompt_template=question_answering_with_references,
+            model_kwargs={"temperature": 0, "stream": True},  # Set your desired temperature here
         )
     else:
         logger.error('Given <provider> unknown. Please use any of "anthropic", "cohere", "huggingface", or "openai"')
@@ -64,20 +65,24 @@ def add_example_data(document_store, dir):
     # Importing top-level causes a circular import
     from haystack.nodes import TextConverter, PreProcessor
 
+    dir_path = os.path.abspath(dir)
+
     if dir == "data/GoT_getting_started":
         # Download and add Game of Thrones TXT files
         fetch_archive_from_http(
             url="https://s3.eu-central-1.amazonaws.com/deepset.ai-farm-qa/datasets/documents/wiki_gameofthrones_txt.zip",
             output_dir=dir,
         )
-        files_to_index = [dir + "/" + f for f in os.listdir(dir)]
+        # files_to_index = [dir + "/" + f for f in os.listdir(dir)]
+        files_to_index = [os.path.join(dir_path, f) for f in os.listdir(dir)]
         converter = TextConverter(remove_numeric_tables=True)
         docs = [converter.convert(file_path=file, meta={"filename": file})[0] for file in files_to_index]
     else:  # Here you can add a local folder with your files(.txt, .pdf, .docx).
         # You might need to install additional packages with "pip install farm-haystack[ocr,preprocessing,file-conversion,pdf]".
         # For more details, see: https://haystack.deepset.ai/tutorials/08_preprocessing.
         # Be aware that some of your data will be sent to external APIs if you use this functionality!
-        files_to_index = [dir + "/" + f for f in os.listdir(dir)]
+        # files_to_index = [dir + "/" + f for f in os.listdir(dir)]
+        files_to_index = [os.path.join(dir_path, f) for f in os.listdir(dir)]
         logger.info("Adding %s number of files from local disk at %s.", len(files_to_index), dir)
         docs = convert_files_to_docs(dir_path=dir)
 

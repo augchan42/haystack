@@ -86,7 +86,7 @@ LEGACY_DEFAULT_TEMPLATES: Dict[str, Dict] = {
         "output_parser": AnswerParser(),
     },
     "question-answering-with-references": {
-        "prompt": "Create a concise and informative answer (no more than 50 words) for a given question "
+        "prompt": "Create a concise and informative answer for a given question "
         "based solely on the given documents. You must only use information from the given documents. "
         "Use an unbiased and journalistic tone. Do not repeat text. Cite the documents using Document[number] notation. "
         "If multiple documents contain the answer, cite those documents like ‘as stated in Document[number], Document[number], etc.’. "

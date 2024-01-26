@@ -44,6 +44,7 @@ def build_pipeline(provider, API_KEY, document_store, API_BASE):
             api_key=API_KEY,
             api_base=API_BASE,
             default_prompt_template=question_answering_with_references,
+            model_kwargs={"temperature": 0},  # Set your desired temperature here
         )
     else:
         logger.error('Given <provider> unknown. Please use any of "anthropic", "cohere", "huggingface", or "openai"')

@@ -1,6 +1,8 @@
 from typing import List, Optional, Dict
 
 import logging
+import re
+
 from pathlib import Path
 from haystack.nodes.file_converter.base import BaseConverter
 from haystack.schema import Document
@@ -50,6 +52,7 @@ class TextConverter(BaseConverter):
 
         with open(file_path, encoding=encoding, errors="ignore") as f:
             text = f.read()
+            text = re.sub(r"[ \t\r\n]+", " ", text).strip()
             pages = text.split("\f")
 
         cleaned_pages = []
@@ -70,9 +73,9 @@ class TextConverter(BaseConverter):
                     logger.debug("Removing line '%s' from %s", line, file_path)
                     continue
 
-                cleaned_lines.append(line)
+                cleaned_lines.append(line.strip())
 
-            page = "\n".join(cleaned_lines)
+            page = "\n".join(cleaned_lines).strip()
             cleaned_pages.append(page)
 
         if valid_languages:

@@ -10,6 +10,12 @@ from haystack.nodes import EmbeddingRetriever
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
+haystack_logger = logging.getLogger("haystack")
+haystack_logger.setLevel(logging.DEBUG)
+# Set the log level for 'numba' to WARNING to suppress debug messages
+numba_logger = logging.getLogger("numba")
+numba_logger.setLevel(logging.WARNING)
+
 logger = logging.getLogger(__name__)
 
 
@@ -20,7 +26,7 @@ def initialize_document_store(faiss_index_path, faiss_config_path, embedding_ret
         try:
             document_store = FAISSDocumentStore.load(index_path=faiss_index_path, config_path=faiss_config_path)
             # Check if the index is empty or out of sync
-            if document_store.get_document_count() == 0 or not document_store.is_index_correctly_built():
+            if is_reindexing_needed(document_store):
                 reindex_document_store(document_store, embedding_retriever, faiss_index_path, faiss_config_path)
         except ValueError as e:
             logger.info("Reindexing due to: %s", e)
@@ -104,7 +110,7 @@ def getting_started(provider, API_KEY, API_BASE: Optional[str] = None):
     if is_reindexing_needed(document_store):
         reindex_document_store(document_store, embedding_retriever, faiss_index_path, faiss_config_path)
 
-    result = pipeline.run(query="Who is the father of Arya Stark?")
+    result = pipeline.run(query=query)
     print_answers(result, details="medium")
     return result
 
@@ -115,4 +121,4 @@ if __name__ == "__main__":
     if API_KEY is None:
         raise ValueError("Please set the OPENAI_API_KEY environment variable.")
 
-    getting_started(provider="openai", API_KEY=API_KEY)
+    getting_started(provider="openai", API_KEY=API_KEY, API_BASE="http://192.168.1.100:1234/v1")
