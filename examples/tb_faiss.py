@@ -11,7 +11,7 @@ from haystack.nodes import EmbeddingRetriever
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 haystack_logger = logging.getLogger("haystack")
-haystack_logger.setLevel(logging.DEBUG)
+haystack_logger.setLevel(logging.INFO)
 # Set the log level for 'numba' to WARNING to suppress debug messages
 numba_logger = logging.getLogger("numba")
 numba_logger.setLevel(logging.WARNING)
@@ -114,4 +114,4 @@ if __name__ == "__main__":
     if API_KEY is None:
         raise ValueError("Please set the OPENAI_API_KEY environment variable.")
 
-    getting_started(provider="openai", API_KEY=API_KEY, API_BASE="http://192.168.1.100:1234/v1")
+    getting_started(provider="openai", API_KEY=API_KEY, API_BASE="http://192.168.1.107:1234/v1")

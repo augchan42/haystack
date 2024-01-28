@@ -2436,6 +2436,8 @@ class Pipeline:
         if params and not all(node_id in self.graph.nodes for node_id in params.keys()):
             # Might be a non-targeted param. Verify that too
             not_a_node = set(params.keys()) - set(self.graph.nodes)
+            logger.info("_validate_node_names_in_params params.keys: %s", params.keys())
+            logger.info("_validate_node_names_in_params self.graph.nodes: %s", self.graph.nodes)
             # "debug" will be picked up by _dispatch_run, see its code
             # "add_isolated_node_eval" is set by pipeline.eval / pipeline.eval_batch
             valid_global_params = {"debug", "add_isolated_node_eval"}

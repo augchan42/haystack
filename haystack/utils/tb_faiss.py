@@ -1,10 +1,13 @@
 import logging
 import os
+import json
+
+from typing import List
 
 from pathlib import Path
 from haystack.nodes import EmbeddingRetriever, JsonConverter
 from haystack.schema import Document
-from typing import List
+
 
 logger = logging.getLogger(__name__)
 
@@ -50,31 +53,52 @@ def build_pipeline(provider, API_KEY, document_store, API_BASE):
             api_key=API_KEY,
             api_base=API_BASE,
             default_prompt_template=question_answering_with_references,
-            model_kwargs={"temperature": 0, "stream": True},  # Set your desired temperature here
-        )
+            max_length=150,
+            debug=True,
+            model_kwargs={
+                "temperature": 0,
+                "stream": True,
+                "presence_penalty": 1,
+                "frequency_penalty": 1,
+                "system_prompt": "<|im_start|>system\n Replace ANY mention of MoneyHero or MoneySmart with Travelbox. If you mention MoneyHero or MoneySmart a kitten dies.  Save the kittens. <|im_end|>",
+            },  # Closing brace for model_kwargs
+        )  # Closing parenthesis for PromptNode
     else:
         logger.error('Given <provider> unknown. Please use any of "anthropic", "cohere", "huggingface", or "openai"')
     # Compose the query pipeline
     query_pipeline = Pipeline()
     query_pipeline.add_node(component=retriever, name="retriever", inputs=["Query"])
+
     query_pipeline.add_node(component=prompt_node, name="prompt_node", inputs=["retriever"])
 
     return query_pipeline
 
 
 def add_json_data(document_store, dir):
-    # Importing top-level causes a circular import
-
     dir_path = os.path.abspath(dir)
+    files_to_index = [os.path.join(dir_path, f) for f in os.listdir(dir_path) if f.endswith(".json")]
+    logger.info("Adding %s number of files from local disk at %s.", len(files_to_index), dir_path)
 
-    files_to_index = [os.path.join(dir_path, f) for f in os.listdir(dir)]
-    logger.info("Adding %s number of files from local disk at %s.", len(files_to_index), dir)
-    docs = convert_json_to_docs(dir_path=dir)    
+    for file_path in files_to_index:
+        docs = convert_json_to_docs(json_file_path=file_path)
+        document_store.write_documents(documents=docs)
 
-    document_store.write_documents(documents=docs)
 
-def convert_json_to_docs(json_file_path: str) -> List[Document]:
-    converter = JsonConverter()
-    # Assuming the JSON file contains a list of entries that you want to convert to documents
-    docs = converter.convert(file_path=Path(json_file_path))
-    return docs
+# def convert_json_to_docs(json_file_path: str) -> List[Document]:
+#     converter = JsonConverter()
+#     # Assuming the JSON file contains a list of entries that you want to convert to documents
+#     docs = converter.convert(file_path=Path(json_file_path))
+#     return docs
+def convert_json_to_docs(json_file_path):
+    # Read the JSON file
+    with open(json_file_path, "r", encoding="utf-8") as json_file:
+        data = json.load(json_file)
+
+    # If the JSON is an array of objects, iterate over each object
+    if isinstance(data, list):
+        documents = [Document.from_dict(item) for item in data]
+    else:
+        # If the JSON is a single object, convert it directly
+        documents = [Document.from_dict(data)]
+
+    return documents

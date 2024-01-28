@@ -49,6 +49,7 @@ class ChatGPTInvocationLayer(OpenAIInvocationLayer):
         sensitive content using the [OpenAI Moderation API](https://platform.openai.com/docs/guides/moderation)
         if set. If the input or answers are flagged, an empty list is returned in place of the answers.
         """
+        logger.info("__init__ before super init kwargs %s", kwargs)
         super().__init__(api_key, model_name_or_path, max_length, api_base=api_base, timeout=timeout, **kwargs)
 
     def _extract_token(self, event_data: Dict[str, Any]):
@@ -121,16 +122,21 @@ class ChatGPTInvocationLayer(OpenAIInvocationLayer):
         Note: Only kwargs relevant to OpenAI are passed to OpenAI rest API. Others kwargs are ignored.
         For more details, see OpenAI [documentation](https://platform.openai.com/docs/api-reference/completions/create).
         """
-        prompt, base_payload, kwargs_with_defaults, stream, moderation = self._prepare_invoke(*args, **kwargs)
-
+        system_prompt, prompt, base_payload, kwargs_with_defaults, stream, moderation = self._prepare_invoke(
+            *args, **kwargs
+        )
+        logger.info("ainvoke system_prompt %s", system_prompt)
         if moderation and await check_openai_async_policy_violation(input=prompt, headers=self.headers):
             logger.info("Prompt '%s' will not be sent to OpenAI due to potential policy violation.", prompt)
             return []
 
+        messages = []
+        if system_prompt:
+            messages.append({"role": "system", "content": system_prompt})
         if isinstance(prompt, str):
-            messages = [{"role": "user", "content": prompt}]
+            messages.append({"role": "user", "content": prompt})
         elif isinstance(prompt, list) and len(prompt) > 0 and isinstance(prompt[0], dict):
-            messages = prompt
+            messages.extend(prompt)
         else:
             raise ValueError(
                 f"The prompt format is different than what the model expects. "
@@ -164,6 +170,47 @@ class ChatGPTInvocationLayer(OpenAIInvocationLayer):
 
         return assistant_response
 
+    def _prepare_invoke(self, *args, **kwargs):
+        logger.info("_prepare_invoke args %s", args)
+        logger.info("_prepare_invoke kwargs %s", kwargs)
+        prompt = kwargs.get("prompt")
+        if not prompt:
+            raise ValueError(
+                f"No prompt provided. Model {self.model_name_or_path} requires prompt."
+                f"Make sure to provide prompt in kwargs."
+            )
+        # either stream is True (will use default handler) or stream_handler is provided
+        kwargs_with_defaults = self.model_input_kwargs
+        system_prompt = kwargs_with_defaults.get("system_prompt", None)  # Extract system_prompt if provided
+        logger.info("_prepare_invoke system_prompt %s", system_prompt)
+        if kwargs:
+            # we use keyword stop_words but OpenAI uses stop
+            if "stop_words" in kwargs:
+                kwargs["stop"] = kwargs.pop("stop_words")
+            if "top_k" in kwargs:
+                top_k = kwargs.pop("top_k")
+                kwargs["n"] = top_k
+                kwargs["best_of"] = top_k
+            kwargs_with_defaults.update(kwargs)
+        stream = (
+            kwargs_with_defaults.get("stream", False) or kwargs_with_defaults.get("stream_handler", None) is not None
+        )
+        moderation = kwargs_with_defaults.get("moderate_content", False)
+        base_payload = {  # payload common to all OpenAI models
+            "model": self.model_name_or_path,
+            "max_tokens": kwargs_with_defaults.get("max_tokens", self.max_length),
+            "temperature": kwargs_with_defaults.get("temperature", 0.7),
+            "top_p": kwargs_with_defaults.get("top_p", 1),
+            "n": kwargs_with_defaults.get("n", 1),
+            "stream": stream,
+            "stop": kwargs_with_defaults.get("stop", None),
+            "presence_penalty": kwargs_with_defaults.get("presence_penalty", 0),
+            "frequency_penalty": kwargs_with_defaults.get("frequency_penalty", 0),
+            "logit_bias": kwargs_with_defaults.get("logit_bias", {}),
+        }
+
+        return (system_prompt, prompt, base_payload, kwargs_with_defaults, stream, moderation)
+
     def invoke(self, *args, **kwargs):
         """
         Invokes a prompt on the model. Based on the model, it takes in a prompt (or either a prompt or a list of messages)
@@ -174,16 +221,22 @@ class ChatGPTInvocationLayer(OpenAIInvocationLayer):
         Note: Only kwargs relevant to OpenAI are passed to OpenAI rest API. Others kwargs are ignored.
         For more details, see OpenAI [documentation](https://platform.openai.com/docs/api-reference/completions/create).
         """
-        prompt, base_payload, kwargs_with_defaults, stream, moderation = self._prepare_invoke(*args, **kwargs)
-
+        # at this point system prompt isn't there
+        system_prompt, prompt, base_payload, kwargs_with_defaults, stream, moderation = self._prepare_invoke(
+            *args, **kwargs
+        )
+        logger.info("invoke system_prompt %s", system_prompt)
         if moderation and check_openai_policy_violation(input=prompt, headers=self.headers):
             logger.info("Prompt '%s' will not be sent to OpenAI due to potential policy violation.", prompt)
             return []
 
+        messages = []
+        if system_prompt:
+            messages.append({"role": "system", "content": system_prompt})
         if isinstance(prompt, str):
-            messages = [{"role": "user", "content": prompt}]
+            messages.append({"role": "user", "content": prompt})
         elif isinstance(prompt, list) and len(prompt) > 0 and isinstance(prompt[0], dict):
-            messages = prompt
+            messages.extend(prompt)
         else:
             raise ValueError(
                 f"The prompt format is different than what the model expects. "
@@ -192,6 +245,7 @@ class ChatGPTInvocationLayer(OpenAIInvocationLayer):
             )
         extra_payload = {"messages": messages}
         payload = {**base_payload, **extra_payload}
+        logger.info("ChatGPTInvocationLayer invoke payload: %s", payload)
         if not stream:
             response = openai_request(url=self.url, headers=self.headers, payload=payload, timeout=self.timeout)
             _check_openai_finish_reason(result=response, payload=payload)

@@ -95,6 +95,7 @@ class OpenAIInvocationLayer(PromptModelInvocationLayer):
                 "stream",
                 "stream_handler",
                 "moderate_content",
+                "system_prompt",
             ]
             if key in kwargs
         }

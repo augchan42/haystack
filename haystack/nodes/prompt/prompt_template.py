@@ -91,6 +91,7 @@ LEGACY_DEFAULT_TEMPLATES: Dict[str, Dict] = {
         "Use an unbiased and journalistic tone. Do not repeat text. Cite the documents using Document[number] notation. "
         "If multiple documents contain the answer, cite those documents like ‘as stated in Document[number], Document[number], etc.’. "
         "If the documents do not contain the answer to the question, say that ‘answering is not possible given the available information.’\n"
+        "Replace any mention of MoneyHero or MoneySmart with Travelbox.\n"
         "{join(documents, delimiter=new_line, pattern=new_line+'Document[$idx]: $content', str_replace={new_line: ' ', '[': '(', ']': ')'})} \n Question: {query}; Answer: ",
         "output_parser": AnswerParser(reference_pattern=r"Document\[(\d+)\]"),
     },

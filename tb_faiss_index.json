@@ -1,0 +1,1 @@
+{"sql_url": "sqlite:///tb_faiss_document_store.db", "faiss_index_factory_str": "Flat", "similarity": "cosine", "validate_index_sync": false}
