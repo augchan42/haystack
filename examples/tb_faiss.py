@@ -103,8 +103,11 @@ def getting_started(provider, API_KEY, API_BASE: Optional[str] = None):
     if is_reindexing_needed(document_store):
         reindex_document_store(document_store, embedding_retriever, faiss_index_path, faiss_config_path)
 
-    result = pipeline.run(query=query)
+    result = pipeline.run(query=query, debug=True)
+    print(result["_debug"])
+
     print_answers(result, details="medium")
+
     return result
 
 
@@ -113,5 +116,6 @@ if __name__ == "__main__":
     API_KEY = os.getenv("OPENAI_API_KEY")
     if API_KEY is None:
         raise ValueError("Please set the OPENAI_API_KEY environment variable.")
-
-    getting_started(provider="openai", API_KEY=API_KEY, API_BASE="http://192.168.1.107:1234/v1")
+    API_BASE = None
+    # API_BASE="http://192.168.1.107:1234/v1"
+    getting_started(provider="openai", API_KEY=API_KEY, API_BASE=API_BASE)

@@ -49,7 +49,7 @@ class ChatGPTInvocationLayer(OpenAIInvocationLayer):
         sensitive content using the [OpenAI Moderation API](https://platform.openai.com/docs/guides/moderation)
         if set. If the input or answers are flagged, an empty list is returned in place of the answers.
         """
-        logger.info("__init__ before super init kwargs %s", kwargs)
+
         super().__init__(api_key, model_name_or_path, max_length, api_base=api_base, timeout=timeout, **kwargs)
 
     def _extract_token(self, event_data: Dict[str, Any]):
@@ -125,7 +125,7 @@ class ChatGPTInvocationLayer(OpenAIInvocationLayer):
         system_prompt, prompt, base_payload, kwargs_with_defaults, stream, moderation = self._prepare_invoke(
             *args, **kwargs
         )
-        logger.info("ainvoke system_prompt %s", system_prompt)
+
         if moderation and await check_openai_async_policy_violation(input=prompt, headers=self.headers):
             logger.info("Prompt '%s' will not be sent to OpenAI due to potential policy violation.", prompt)
             return []
@@ -171,8 +171,6 @@ class ChatGPTInvocationLayer(OpenAIInvocationLayer):
         return assistant_response
 
     def _prepare_invoke(self, *args, **kwargs):
-        logger.info("_prepare_invoke args %s", args)
-        logger.info("_prepare_invoke kwargs %s", kwargs)
         prompt = kwargs.get("prompt")
         if not prompt:
             raise ValueError(
@@ -182,7 +180,6 @@ class ChatGPTInvocationLayer(OpenAIInvocationLayer):
         # either stream is True (will use default handler) or stream_handler is provided
         kwargs_with_defaults = self.model_input_kwargs
         system_prompt = kwargs_with_defaults.get("system_prompt", None)  # Extract system_prompt if provided
-        logger.info("_prepare_invoke system_prompt %s", system_prompt)
         if kwargs:
             # we use keyword stop_words but OpenAI uses stop
             if "stop_words" in kwargs:
@@ -225,7 +222,7 @@ class ChatGPTInvocationLayer(OpenAIInvocationLayer):
         system_prompt, prompt, base_payload, kwargs_with_defaults, stream, moderation = self._prepare_invoke(
             *args, **kwargs
         )
-        logger.info("invoke system_prompt %s", system_prompt)
+
         if moderation and check_openai_policy_violation(input=prompt, headers=self.headers):
             logger.info("Prompt '%s' will not be sent to OpenAI due to potential policy violation.", prompt)
             return []
@@ -245,7 +242,7 @@ class ChatGPTInvocationLayer(OpenAIInvocationLayer):
             )
         extra_payload = {"messages": messages}
         payload = {**base_payload, **extra_payload}
-        logger.info("ChatGPTInvocationLayer invoke payload: %s", payload)
+
         if not stream:
             response = openai_request(url=self.url, headers=self.headers, payload=payload, timeout=self.timeout)
             _check_openai_finish_reason(result=response, payload=payload)

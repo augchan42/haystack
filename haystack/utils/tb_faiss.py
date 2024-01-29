@@ -2,12 +2,8 @@ import logging
 import os
 import json
 
-from typing import List
-
-from pathlib import Path
-from haystack.nodes import EmbeddingRetriever, JsonConverter
+from haystack.nodes import EmbeddingRetriever
 from haystack.schema import Document
-
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +64,6 @@ def build_pipeline(provider, API_KEY, document_store, API_BASE):
     # Compose the query pipeline
     query_pipeline = Pipeline()
     query_pipeline.add_node(component=retriever, name="retriever", inputs=["Query"])
-
     query_pipeline.add_node(component=prompt_node, name="prompt_node", inputs=["retriever"])
 
     return query_pipeline
