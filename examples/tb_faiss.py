@@ -73,21 +73,58 @@ def is_reindexing_needed(document_store):
     return sql_doc_count != faiss_doc_count
 
 
-def getting_started(provider, API_KEY, API_BASE: Optional[str] = None):
+def setup_document_store(faiss_index_path, faiss_config_path, embedding_model, use_gpu):
+    """
+    Initializes and reindexes the document store if needed.
+
+    :param faiss_index_path: Path to the FAISS index file.
+    :param faiss_config_path: Path to the FAISS config file.
+    :param embedding_retriever: The embedding retriever instance.
+    :return: Initialized and possibly reindexed document store.
+    """
+    embedding_retriever = EmbeddingRetriever(document_store=None, embedding_model=embedding_model, use_gpu=use_gpu)
+    document_store = initialize_document_store(faiss_index_path, faiss_config_path, embedding_retriever)
+    embedding_retriever.document_store = document_store
+    # Initialize EmbeddingRetriever
+
+    if is_reindexing_needed(document_store):
+        reindex_document_store(document_store, embedding_retriever, faiss_index_path, faiss_config_path)
+
+    return document_store
+
+
+def query_document_store(provider, API_KEY, document_store, API_BASE, query):
+    """
+    Queries the document store by running the pipeline.
+
+    :param provider: The provider for the LLM.
+    :param API_KEY: The API key for the provider.
+    :param document_store: The document store to query.
+    :param API_BASE: The base API URL.
+    :param query: The query to run.
+    :return: The result of the pipeline run.
+    """
+    pipeline = build_pipeline(provider, API_KEY, document_store, API_BASE)
+    result = pipeline.run(query=query)
+    print_answers(result, details="medium")
+    return result
+
+
+def run_query_pipeline(provider, API_KEY, API_BASE: Optional[str] = None):
     """
     This getting_started example shows you how to use LLMs with your data with a technique called Retrieval Augmented Generation - RAG.
 
     :param provider: We are model agnostic :) Here, you can choose from: "anthropic", "cohere", "huggingface", and "openai".
     :param API_KEY: The API key matching the provider.
+    :param API_BASE: Optional base API URL.
     """
 
     query = "what travel plans do you offer?"
     faiss_index_path = "tb_faiss_index.faiss"
     faiss_config_path = "tb_faiss_index.json"
-
-    # Initialize EmbeddingRetriever
+    embedding_model = "intfloat/e5-base-v2"
     embedding_retriever = EmbeddingRetriever(
-        document_store=None, embedding_model="intfloat/e5-base-v2", use_gpu=True  # We'll set the document_store later
+        document_store=None, embedding_model=embedding_model, use_gpu=True  # We'll set the document_store later
     )
 
     try:
@@ -118,4 +155,4 @@ if __name__ == "__main__":
         raise ValueError("Please set the OPENAI_API_KEY environment variable.")
     API_BASE = None
     # API_BASE="http://192.168.1.107:1234/v1"
-    getting_started(provider="openai", API_KEY=API_KEY, API_BASE=API_BASE)
+    run_query_pipeline(provider="openai", API_KEY=API_KEY, API_BASE=API_BASE)
