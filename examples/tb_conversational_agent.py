@@ -51,6 +51,7 @@ class WebQAIndexingPipeline(WebQAPipeline):
 
         # Create a new Document object with the question and answer
         document_content = f"Question: {query}\nAnswer: {answer}"
+        logger.info("to index document_content: %s", document_content)
         # Create a unique ID based on the hash of the document content
         document_id = hashlib.sha256(document_content.encode()).hexdigest()
         document = Document(id=document_id, content=document_content)
@@ -148,7 +149,7 @@ tb_custom_prompt = """
 
     The AI Agent should not ask the human user for additional information, clarification, or context.
 
-    If after using both tools, the AI Agent cannot find a specific answer, it answers with 'Final Answer: inconclusive'.
+    If after using both tools and own observations, the AI Agent cannot find a specific answer, it answers with 'Final Answer: inconclusive'.
 
     Question: {query}
     Thought:

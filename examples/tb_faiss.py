@@ -58,7 +58,7 @@ def reindex_document_store(document_store, embedding_retriever, faiss_index_path
     logger.info("FAISS index is empty or out of sync. Re-indexing.")
     # Add documents to the document store and update embeddings
     add_json_data(document_store, "processed_files")
-    document_store.update_embeddings(embedding_retriever)
+    document_store.update_embeddings(embedding_retriever, update_existing_embeddings=False)
     # Save the updated index
     document_store.save(index_path=faiss_index_path, config_path=faiss_config_path)
 
