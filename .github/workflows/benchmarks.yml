@@ -2,9 +2,9 @@ name: Benchmarks
 
 on:
   workflow_dispatch:
-  schedule:
+  # schedule:
     # At 00:01 on Sunday
-    - cron: "1 0 * * 0"
+    # - cron: "1 0 * * 0"
 
 permissions:
   id-token: write
