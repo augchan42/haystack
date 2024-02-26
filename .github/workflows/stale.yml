@@ -1,7 +1,8 @@
 name: 'Stalebot'
 on:
-  schedule:
-    - cron: '30 1 * * *'
+  workflow_dispatch: # Activate this workflow manually
+  # schedule:
+    # - cron: '30 1 * * *'
 
 jobs:
   proposals:

@@ -3,8 +3,8 @@ name: end-to-end
 
 on:
   workflow_dispatch: # Activate this workflow manually
-  schedule:
-    - cron: "0 0 * * *"
+  # schedule:
+  #   - cron: "0 0 * * *"
   pull_request:
     types:
       - opened
